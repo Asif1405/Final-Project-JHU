@@ -1,0 +1,657 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Predictions using the Weight Lifting Exercises Dataset},
+            pdfauthor={Tom Lous},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Predictions using the Weight Lifting Exercises Dataset}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Tom Lous}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{17 May 2016}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{executive-summary}{%
+\subsection{Executive Summary}\label{executive-summary}}
+
+Based on a dataset provide by HAR
+\url{http://groupware.les.inf.puc-rio.br/har} we will try to train a
+predictive model to predict what exercise was performed using a dataset
+with 159 features
+
+We'll take the following steps:
+
+\begin{itemize}
+\tightlist
+\item
+  Process the data, for use of this project
+\item
+  Explore the data, especially focussing on the two paramaters we are
+  interested in
+\item
+  Model selection, where we try different models to help us answer our
+  questions
+\item
+  Model examination, to see wether our best model holds up to our
+  standards
+\item
+  A Conclusion where we answer the questions based on the data
+\item
+  Predicting the classification of the model on test set
+\end{itemize}
+
+\hypertarget{processing}{%
+\subsection{Processing}\label{processing}}
+
+First change `am' to factor (0 = automatic, 1 = manual) And make
+cylinders a factor as well (since it is not continious)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{training.raw <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"pml-training.csv"}\NormalTok{)}
+\NormalTok{testing.raw <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"pml-testing.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploratory-data-analyses}{%
+\subsection{Exploratory data analyses}\label{exploratory-data-analyses}}
+
+Look at the dimensions \& head of the dataset to get an idea
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Res 1}
+\KeywordTok{dim}\NormalTok{(training.raw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 19622   160
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Res 2 - excluded because excessivness}
+\CommentTok{# head(training.raw)}
+\CommentTok{# Res 3 - excluded because excessivness}
+\CommentTok{#str(training.raw)}
+\CommentTok{# Res 4 - excluded because excessivness}
+\CommentTok{#summary(training.raw)}
+\end{Highlighting}
+\end{Shaded}
+
+What we see is a lot of data with NA / empty values. Let's remove those
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{maxNAPerc =}\StringTok{ }\DecValTok{20}
+\NormalTok{maxNACount <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(training.raw) }\OperatorTok{/}\StringTok{ }\DecValTok{100} \OperatorTok{*}\StringTok{ }\NormalTok{maxNAPerc}
+\NormalTok{removeColumns <-}\StringTok{ }\KeywordTok{which}\NormalTok{(}\KeywordTok{colSums}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(training.raw) }\OperatorTok{|}\StringTok{ }\NormalTok{training.raw}\OperatorTok{==}\StringTok{""}\NormalTok{) }\OperatorTok{>}\StringTok{ }\NormalTok{maxNACount)}
+\NormalTok{training.cleaned01 <-}\StringTok{ }\NormalTok{training.raw[,}\OperatorTok{-}\NormalTok{removeColumns]}
+\NormalTok{testing.cleaned01 <-}\StringTok{ }\NormalTok{testing.raw[,}\OperatorTok{-}\NormalTok{removeColumns]}
+\end{Highlighting}
+\end{Shaded}
+
+Also remove all time related data, since we won't use those
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{removeColumns <-}\StringTok{ }\KeywordTok{grep}\NormalTok{(}\StringTok{"timestamp"}\NormalTok{, }\KeywordTok{names}\NormalTok{(training.cleaned01))}
+\NormalTok{training.cleaned02 <-}\StringTok{ }\NormalTok{training.cleaned01[,}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, removeColumns )]}
+\NormalTok{testing.cleaned02 <-}\StringTok{ }\NormalTok{testing.cleaned01[,}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, removeColumns )]}
+\end{Highlighting}
+\end{Shaded}
+
+Then convert all factors to integers
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{classeLevels <-}\StringTok{ }\KeywordTok{levels}\NormalTok{(training.cleaned02}\OperatorTok{$}\NormalTok{classe)}
+\NormalTok{training.cleaned03 <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{data.matrix}\NormalTok{(training.cleaned02))}
+\NormalTok{training.cleaned03}\OperatorTok{$}\NormalTok{classe <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(training.cleaned03}\OperatorTok{$}\NormalTok{classe, }\DataTypeTok{labels=}\NormalTok{classeLevels)}
+\NormalTok{testing.cleaned03 <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{data.matrix}\NormalTok{(testing.cleaned02))}
+\end{Highlighting}
+\end{Shaded}
+
+Finally set the dataset to be explored
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{training.cleaned <-}\StringTok{ }\NormalTok{training.cleaned03}
+\NormalTok{testing.cleaned <-}\StringTok{ }\NormalTok{testing.cleaned03}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploratory-data-analyses-1}{%
+\subsection{Exploratory data
+analyses}\label{exploratory-data-analyses-1}}
+
+Since the test set provided is the the ultimate validation set, we will
+split the current training in a test and train set to work with.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{19791108}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(caret)}
+\NormalTok{classeIndex <-}\StringTok{ }\KeywordTok{which}\NormalTok{(}\KeywordTok{names}\NormalTok{(training.cleaned) }\OperatorTok{==}\StringTok{ "classe"}\NormalTok{)}
+\NormalTok{partition <-}\StringTok{ }\KeywordTok{createDataPartition}\NormalTok{(}\DataTypeTok{y=}\NormalTok{training.cleaned}\OperatorTok{$}\NormalTok{classe, }\DataTypeTok{p=}\FloatTok{0.75}\NormalTok{, }\DataTypeTok{list=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{training.subSetTrain <-}\StringTok{ }\NormalTok{training.cleaned[partition, ]}
+\NormalTok{training.subSetTest <-}\StringTok{ }\NormalTok{training.cleaned[}\OperatorTok{-}\NormalTok{partition, ]}
+\end{Highlighting}
+\end{Shaded}
+
+What are some fields that have high correlations with the classe?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{correlations <-}\StringTok{ }\KeywordTok{cor}\NormalTok{(training.subSetTrain[, }\OperatorTok{-}\NormalTok{classeIndex], }\KeywordTok{as.numeric}\NormalTok{(training.subSetTrain}\OperatorTok{$}\NormalTok{classe))}
+\NormalTok{bestCorrelations <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(}\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{as.table}\NormalTok{(correlations)), }\KeywordTok{abs}\NormalTok{(Freq)}\OperatorTok{>}\FloatTok{0.3}\NormalTok{)}
+\NormalTok{bestCorrelations}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Var1 Var2     Freq
+## 44 pitch_forearm    A 0.336018
+\end{verbatim}
+
+Even the best correlations with classe are hardly above 0.3 Let's check
+visually if there is indeed hard to use these 2 as possible simple
+linear predictors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(Rmisc)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(training.subSetTrain, }\KeywordTok{aes}\NormalTok{(classe,pitch_forearm)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{classe))}
+\NormalTok{p2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(training.subSetTrain, }\KeywordTok{aes}\NormalTok{(classe, magnet_arm_x)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{classe))}
+\KeywordTok{multiplot}\NormalTok{(p1,p2,}\DataTypeTok{cols=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Final_Project_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+Clearly there is no hard seperation of classes possible using only these
+`highly' correlated features. Let's train some models to get closer to a
+way of predicting these classe's
+
+\hypertarget{model-selection}{%
+\subsection{Model selection}\label{model-selection}}
+
+Let's identify variables with high correlations amongst each other in
+our set, so we can possibly exclude them from the pca or training.
+
+We will check afterwards if these modifications to the dataset make the
+model more accurate (and perhaps even faster)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(corrplot)}
+\NormalTok{correlationMatrix <-}\StringTok{ }\KeywordTok{cor}\NormalTok{(training.subSetTrain[, }\OperatorTok{-}\NormalTok{classeIndex])}
+\NormalTok{highlyCorrelated <-}\StringTok{ }\KeywordTok{findCorrelation}\NormalTok{(correlationMatrix, }\DataTypeTok{cutoff=}\FloatTok{0.9}\NormalTok{, }\DataTypeTok{exact=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{excludeColumns <-}\StringTok{ }\KeywordTok{c}\NormalTok{(highlyCorrelated, classeIndex)}
+\KeywordTok{corrplot}\NormalTok{(correlationMatrix, }\DataTypeTok{method=}\StringTok{"color"}\NormalTok{, }\DataTypeTok{type=}\StringTok{"lower"}\NormalTok{, }\DataTypeTok{order=}\StringTok{"hclust"}\NormalTok{, }\DataTypeTok{tl.cex=}\FloatTok{0.70}\NormalTok{, }\DataTypeTok{tl.col=}\StringTok{"black"}\NormalTok{, }\DataTypeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\DataTypeTok{diag =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Final_Project_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+We see that there are some features that aree quite correlated with each
+other. We will have a model with these excluded. Also we'll try and
+reduce the features by running PCA on all and the excluded subset of the
+features
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pcaPreProcess.all <-}\StringTok{ }\KeywordTok{preProcess}\NormalTok{(training.subSetTrain[, }\OperatorTok{-}\NormalTok{classeIndex], }\DataTypeTok{method =} \StringTok{"pca"}\NormalTok{, }\DataTypeTok{thresh =} \FloatTok{0.99}\NormalTok{)}
+\NormalTok{training.subSetTrain.pca.all <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.all, training.subSetTrain[, }\OperatorTok{-}\NormalTok{classeIndex])}
+\NormalTok{training.subSetTest.pca.all <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.all, training.subSetTest[, }\OperatorTok{-}\NormalTok{classeIndex])}
+\NormalTok{testing.pca.all <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.all, testing.cleaned[, }\OperatorTok{-}\NormalTok{classeIndex])}
+\NormalTok{pcaPreProcess.subset <-}\StringTok{ }\KeywordTok{preProcess}\NormalTok{(training.subSetTrain[, }\OperatorTok{-}\NormalTok{excludeColumns], }\DataTypeTok{method =} \StringTok{"pca"}\NormalTok{, }\DataTypeTok{thresh =} \FloatTok{0.99}\NormalTok{)}
+\NormalTok{training.subSetTrain.pca.subset <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.subset, training.subSetTrain[, }\OperatorTok{-}\NormalTok{excludeColumns])}
+\NormalTok{training.subSetTest.pca.subset <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.subset, training.subSetTest[, }\OperatorTok{-}\NormalTok{excludeColumns])}
+\NormalTok{testing.pca.subset <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(pcaPreProcess.subset, testing.cleaned[, }\OperatorTok{-}\NormalTok{classeIndex])}
+\end{Highlighting}
+\end{Shaded}
+
+Now we'll do some actual Random Forest training. We'll use 200 trees,
+because I've already seen that the error rate doesn't decline a lot
+after say 50 trees, but we still want to be thorough. Also we will time
+each of the 4 random forest models to see if when all else is equal one
+pops out as the faster one.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(randomForest)}
+\NormalTok{ntree <-}\StringTok{ }\DecValTok{200} \CommentTok{#This is enough for great accuracy (trust me, I'm an engineer). }
+\NormalTok{start <-}\StringTok{ }\KeywordTok{proc.time}\NormalTok{()}
+\NormalTok{rfMod.cleaned <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{training.subSetTrain[, }\OperatorTok{-}\NormalTok{classeIndex], }
+  \DataTypeTok{y=}\NormalTok{training.subSetTrain}\OperatorTok{$}\NormalTok{classe,}
+  \DataTypeTok{xtest=}\NormalTok{training.subSetTest[, }\OperatorTok{-}\NormalTok{classeIndex], }
+  \DataTypeTok{ytest=}\NormalTok{training.subSetTest}\OperatorTok{$}\NormalTok{classe, }
+  \DataTypeTok{ntree=}\NormalTok{ntree,}
+  \DataTypeTok{keep.forest=}\OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{proximity=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{#do.trace=TRUE}
+\KeywordTok{proc.time}\NormalTok{() }\OperatorTok{-}\StringTok{ }\NormalTok{start}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   75.62    0.64   76.36
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{proc.time}\NormalTok{()}
+\NormalTok{rfMod.exclude <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{training.subSetTrain[, }\OperatorTok{-}\NormalTok{excludeColumns], }
+  \DataTypeTok{y=}\NormalTok{training.subSetTrain}\OperatorTok{$}\NormalTok{classe,}
+  \DataTypeTok{xtest=}\NormalTok{training.subSetTest[, }\OperatorTok{-}\NormalTok{excludeColumns], }
+  \DataTypeTok{ytest=}\NormalTok{training.subSetTest}\OperatorTok{$}\NormalTok{classe, }
+  \DataTypeTok{ntree=}\NormalTok{ntree,}
+  \DataTypeTok{keep.forest=}\OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{proximity=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{#do.trace=TRUE}
+\KeywordTok{proc.time}\NormalTok{() }\OperatorTok{-}\StringTok{ }\NormalTok{start}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   73.63    0.75   74.37
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{proc.time}\NormalTok{()}
+\NormalTok{rfMod.pca.all <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{training.subSetTrain.pca.all, }
+  \DataTypeTok{y=}\NormalTok{training.subSetTrain}\OperatorTok{$}\NormalTok{classe,}
+  \DataTypeTok{xtest=}\NormalTok{training.subSetTest.pca.all, }
+  \DataTypeTok{ytest=}\NormalTok{training.subSetTest}\OperatorTok{$}\NormalTok{classe, }
+  \DataTypeTok{ntree=}\NormalTok{ntree,}
+  \DataTypeTok{keep.forest=}\OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{proximity=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{#do.trace=TRUE}
+\KeywordTok{proc.time}\NormalTok{() }\OperatorTok{-}\StringTok{ }\NormalTok{start}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   72.08    0.83   72.94
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{proc.time}\NormalTok{()}
+\NormalTok{rfMod.pca.subset <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{training.subSetTrain.pca.subset, }
+  \DataTypeTok{y=}\NormalTok{training.subSetTrain}\OperatorTok{$}\NormalTok{classe,}
+  \DataTypeTok{xtest=}\NormalTok{training.subSetTest.pca.subset, }
+  \DataTypeTok{ytest=}\NormalTok{training.subSetTest}\OperatorTok{$}\NormalTok{classe, }
+  \DataTypeTok{ntree=}\NormalTok{ntree,}
+  \DataTypeTok{keep.forest=}\OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{proximity=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{#do.trace=TRUE}
+\KeywordTok{proc.time}\NormalTok{() }\OperatorTok{-}\StringTok{ }\NormalTok{start}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   71.64    2.78   74.81
+\end{verbatim}
+
+\hypertarget{model-examination}{%
+\subsection{Model examination}\label{model-examination}}
+
+Now that we have 4 trained models, we will check the accuracies of each.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.cleaned}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(x = training.subSetTrain[, -classeIndex], y = training.subSetTrain$classe,      xtest = training.subSetTest[, -classeIndex], ytest = training.subSetTest$classe,      ntree = ntree, proximity = TRUE, keep.forest = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 200
+## No. of variables tried at each split: 7
+## 
+##         OOB estimate of  error rate: 0.28%
+## Confusion matrix:
+##      A    B    C    D    E  class.error
+## A 4184    0    0    0    1 0.0002389486
+## B    5 2841    2    0    0 0.0024578652
+## C    0   10 2557    0    0 0.0038955980
+## D    0    0   17 2395    0 0.0070480929
+## E    0    0    0    6 2700 0.0022172949
+##                 Test set error rate: 0.31%
+## Confusion matrix:
+##      A   B   C   D   E class.error
+## A 1395   0   0   0   0 0.000000000
+## B    4 942   3   0   0 0.007376185
+## C    0   2 853   0   0 0.002339181
+## D    0   0   1 802   1 0.002487562
+## E    0   0   0   4 897 0.004439512
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.cleaned.training.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.cleaned}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on training: "}\NormalTok{,rfMod.cleaned.training.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on training: 0.984"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.cleaned.testing.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.cleaned}\OperatorTok{$}\NormalTok{test}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on testing: "}\NormalTok{,rfMod.cleaned.testing.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on testing: 0.983"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.exclude}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(x = training.subSetTrain[, -excludeColumns], y = training.subSetTrain$classe,      xtest = training.subSetTest[, -excludeColumns], ytest = training.subSetTest$classe,      ntree = ntree, proximity = TRUE, keep.forest = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 200
+## No. of variables tried at each split: 6
+## 
+##         OOB estimate of  error rate: 0.28%
+## Confusion matrix:
+##      A    B    C    D    E  class.error
+## A 4184    1    0    0    0 0.0002389486
+## B    4 2842    2    0    0 0.0021067416
+## C    0   12 2555    0    0 0.0046747176
+## D    0    0   15 2396    1 0.0066334992
+## E    0    0    0    6 2700 0.0022172949
+##                 Test set error rate: 0.29%
+## Confusion matrix:
+##      A   B   C   D   E class.error
+## A 1395   0   0   0   0 0.000000000
+## B    2 945   2   0   0 0.004214963
+## C    0   4 851   0   0 0.004678363
+## D    0   0   3 800   1 0.004975124
+## E    0   0   0   2 899 0.002219756
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.exclude.training.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.exclude}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on training: "}\NormalTok{,rfMod.exclude.training.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on training: 0.984"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.exclude.testing.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.exclude}\OperatorTok{$}\NormalTok{test}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on testing: "}\NormalTok{,rfMod.exclude.testing.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on testing: 0.984"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.all}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(x = training.subSetTrain.pca.all, y = training.subSetTrain$classe,      xtest = training.subSetTest.pca.all, ytest = training.subSetTest$classe,      ntree = ntree, proximity = TRUE, keep.forest = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 200
+## No. of variables tried at each split: 6
+## 
+##         OOB estimate of  error rate: 2.08%
+## Confusion matrix:
+##      A    B    C    D    E class.error
+## A 4162   11    1    8    3 0.005495818
+## B   49 2775   18    2    4 0.025632022
+## C    5   30 2509   21    2 0.022594468
+## D    3    1  100 2300    8 0.046434494
+## E    1    7   14   18 2666 0.014781966
+##                 Test set error rate: 1.71%
+## Confusion matrix:
+##      A   B   C   D   E class.error
+## A 1387   4   0   3   1 0.005734767
+## B   14 930   5   0   0 0.020021075
+## C    1  11 836   6   1 0.022222222
+## D    1   0  23 777   3 0.033582090
+## E    0   0   7   4 890 0.012208657
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.all.training.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.pca.all}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on training: "}\NormalTok{,rfMod.pca.all.training.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on training: 0.885"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.all.testing.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.pca.all}\OperatorTok{$}\NormalTok{test}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on testing: "}\NormalTok{,rfMod.pca.all.testing.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on testing: 0.906"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.subset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(x = training.subSetTrain.pca.subset, y = training.subSetTrain$classe,      xtest = training.subSetTest.pca.subset, ytest = training.subSetTest$classe,      ntree = ntree, proximity = TRUE, keep.forest = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 200
+## No. of variables tried at each split: 6
+## 
+##         OOB estimate of  error rate: 2.43%
+## Confusion matrix:
+##      A    B    C    D    E class.error
+## A 4155    8    9   10    3 0.007168459
+## B   69 2741   29    5    4 0.037570225
+## C    2   33 2510   20    2 0.022204908
+## D    7    3  104 2292    6 0.049751244
+## E    2    9   20   13 2662 0.016260163
+##                 Test set error rate: 1.96%
+## Confusion matrix:
+##      A   B   C   D   E class.error
+## A 1387   3   2   3   0 0.005734767
+## B   18 924   7   0   0 0.026343519
+## C    0  12 838   4   1 0.019883041
+## D    0   1  27 774   2 0.037313433
+## E    1   3   9   3 885 0.017758047
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.subset.training.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.pca.subset}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on training: "}\NormalTok{,rfMod.pca.subset.training.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on training: 0.867"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rfMod.pca.subset.testing.acc <-}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(rfMod.pca.subset}\OperatorTok{$}\NormalTok{test}\OperatorTok{$}\NormalTok{confusion[, }\StringTok{'class.error'}\NormalTok{]),}\DecValTok{3}\NormalTok{)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"Accuracy on testing: "}\NormalTok{,rfMod.pca.subset.testing.acc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Accuracy on testing: 0.893"
+\end{verbatim}
+
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
+
+This concludes that nor PCA doesn't have a positive of the accuracy (or
+the process time for that matter) The \texttt{rfMod.exclude} perform's
+slightly better then the `rfMod.cleaned'
+
+We'll stick with the \texttt{rfMod.exclude} model as the best model to
+use for predicting the test set. Because with an accuracy of 98.7\% and
+an estimated OOB error rate of 0.23\% this is the best model.
+
+
+\end{document}
